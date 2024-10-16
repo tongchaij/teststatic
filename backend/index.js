@@ -9,19 +9,19 @@ const app = express();
 
 app.use(express.json());
 
-/*
+
 app.use(cors({
     origin:'http://localhost:5173',
     methods: ['GET','POST'],
     allowedHeaders: ['Content-Type']
 }));
-*/
-
+/*
 app.use(cors({
-    origin:'https://testfront-ahffdqgrghe4efc4.eastus-01.azurewebsites.net',
+    origin:'https://testfrontstatic.netlify.app',
     methods: ['GET','POST'],
     allowedHeaders: ['Content-Type']
 }));
+*/
 
 app.get('/', (request, response) => {
     console.log(request);

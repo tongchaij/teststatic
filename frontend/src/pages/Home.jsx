@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import axios from 'axios';
 import { Gallery } from "react-grid-gallery";
 import './Home.css';
@@ -12,6 +12,8 @@ const Home = () => {
     const [page, setPage] = useState(1);
     const [tag, setTag] = useState('%20');
     const [loadAll, setLoadAll] = useState(false);
+
+    const bdivRef = useRef(null)
 
     const onClickTag = (v) => {
       console.log(`onClickTag(${v})`);
@@ -34,11 +36,11 @@ const Home = () => {
 
 /*      
       axios
-        .get(`http://localhost:5555/pics/${page}/${tag}`)
-      https://testapitestapi.azurewebsites.net/pics
+        .get(`http://localhost:8080/pics/${page}/${tag}`)
 */
       axios
         .get(`https://testapitestapi.azurewebsites.net/pics/${page}/${tag}`)
+        
         .then((response) => {
             const newData = response.data.docs.map((image) => ({
               ...image,
@@ -89,19 +91,23 @@ const Home = () => {
 //        setItems([...items, ...newData]);
     },[loadAll]);
 
+    const scrollbarVisible = () => {
+      let element = bdivRef.current;
+      return element ? element.scrollHeight > element.clientHeight : false;
+    }
+
     return (
         <>
-          <div className='p-4'>
-              <h1 className='text-3xl my-8'>Picture List : {tag=="%20" ? "" : (
-                <span>{tag} <Button label="Clear" className="h-10 px-2 text-md" onClick={clearTag} /></span>
-              )}</h1>
-
-              <div className='size-3/12'>
+          <div className="p-4 flex justify-center w-full flex-wrap md:flex-nowrap">
+              <span className="text-3xl mx-4 my-8 w-full text-nowrap min-w-xs max-w-sm md:max-w-xs md:text-wrap">Picture List : {tag=="%20" ? "" : (
+                <span className="text-bold text-4xl text-blue-500">{tag} <Button label="Clear" className="h-10 px-2 text-md" onClick={clearTag} /></span>
+              )}</span>
+              <div className="flex-grow">
                   <Gallery images={items} enableImageSelection={false}>
                   </Gallery>
               </div>
           </div>
-          <div className='h-96'/>
+          <div className={scrollbarVisible() ? "h-96" : "h-[48rem]"} ref={bdivRef}/>
           <InView as="div" 
               onChange={(inView, entry) => {
                           console.log("Inview:", inView);
